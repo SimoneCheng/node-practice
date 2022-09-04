@@ -14,15 +14,17 @@ module.exports = class Cart {
             if (!err) {
                 cart = JSON.parse(fileContent);
             }
-            const existingProduct = cart.products.find(product => product.id === id);
+            const existingProductIndex = cart.products.findIndex(product => product.id === id);
+            const existingProduct = cart.products[existingProductIndex];
             let updatedProduct;
             if (existingProduct) {
-                updatedProduct = { ...existingProduct };
-                updatedProduct.qty = updatedProduct.qty + 1;
+                existingProduct.qty  = existingProduct.qty + 1;
             } else {
                 updatedProduct = { id: id, qty: 1 };
+                cart.products = [ ...cart.products, updatedProduct ];
             }
-            cart.totalPrice = cart.tatalPrice + productPrice;
+            cart.totalPrice = Number(cart.totalPrice) + Number(productPrice);
+            fs.writeFile(p, JSON.stringify(cart), (err) => console.log(err));
         })
     }
 };
