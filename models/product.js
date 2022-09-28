@@ -1,5 +1,4 @@
-const fs = require("fs");
-const path = require("path");
+const db = require("../utils/database");
 
 const Cart = require("./cart");
 
@@ -34,7 +33,7 @@ module.exports = class Product {
         const existingProductIndex = products.findIndex(
           (product) => product.id === this.id
         );
-        const updatedProducts = [ ...products ];
+        const updatedProducts = [...products];
         updatedProducts[existingProductIndex] = this;
         fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
           console.log(err);
@@ -64,7 +63,7 @@ module.exports = class Product {
   }
 
   static fetchAll(cb) {
-    getProductsFromFile(cb);
+    return db.execute("SELECT * FROM products");
   }
 
   static findById(id, cb) {
