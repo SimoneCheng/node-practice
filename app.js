@@ -9,7 +9,7 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 // const authRoutes = require("./routes/auth");
 
-const mongoConnect = require("./utils/database").mongoConnect;
+const mongoose = require("mongoose");
 
 const User = require('./models/user');
 
@@ -20,7 +20,7 @@ app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false}))
+app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false }))
 
 app.use((req, res, next) => {
   User
@@ -38,6 +38,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(`mongodb+srv://simone:${process.env.TOKEN}@cluster0.dbs3f3u.mongodb.net/shop?retryWrites=true&w=majority`)
+  .then(() => {
+    app.listen(3000)
+  })
+  .catch(err => {
+    console.log(err);
+  });
