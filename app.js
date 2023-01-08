@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -22,15 +24,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false }))
 
-app.use((req, res, next) => {
-  User
-    .findById('639f30a312fd1c6b80765730')
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(err => console.log(err));
-});
+// app.use((req, res, next) => {
+//   User
+//     .findById('639f30a312fd1c6b80765730')
+//     .then(user => {
+//       req.user = new User(user.name, user.email, user.cart, user._id);
+//       next();
+//     })
+//     .catch(err => console.log(err));
+// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -38,6 +40,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+mongoose.set('strictQuery',false);
 mongoose
   .connect(`mongodb+srv://simone:${process.env.TOKEN}@cluster0.dbs3f3u.mongodb.net/shop?retryWrites=true&w=majority`)
   .then(() => {
