@@ -18,10 +18,15 @@ const productSchema = new Schema({
   imageUrl: {
     type: String,
     required: true,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   }
 });
 
-module.exports = mongoose.model('product', productSchema);
+module.exports = mongoose.model('Product', productSchema);
 
 // const mongodb = require('mongodb');
 // const getDb = require('../utils/database').getDb;
