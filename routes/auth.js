@@ -8,4 +8,6 @@ router.get('/login', authController.getLogin);
 
 router.post('/login', authController.postLogin);
 
-export default router;
+router.post('/logout', authController.postLogout);
+
+module.exports = router;
