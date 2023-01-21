@@ -38,6 +38,7 @@
       <% if (isAuthenticated) { %>
         <li>
           <form action="/logout" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button type="submit">Logout</button>
           </form>
         </li>
@@ -66,6 +67,24 @@
       </li>
       <li class="mobile-nav__item">
         <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/products">Admin Products</a>
+      </li>
+    <% } %>
+  </ul>
+  <ul class="mobile-nav__item-list">
+    <% if (!isAuthenticated) { %>
+      <li class="mobile-nav__item">
+        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
+      </li>
+      <li class="mobile-nav__item">
+        <a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a>
+      </li>
+    <% } %>
+    <% if (isAuthenticated) { %>
+      <li>
+        <form action="/logout" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit">Logout</button>
+        </form>
       </li>
     <% } %>
   </ul>

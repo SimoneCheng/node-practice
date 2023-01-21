@@ -3,21 +3,29 @@ const User = require('../models/user');
 
 // 註冊
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
     isAuthenticated: false,
+    errorMessage: message,
   });
 }
 
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
+  // const confirmPassword = req.body.confirmPassword;
   User
     .findOne({ email: email })
     .then(userDoc => {
       if (userDoc) {
+        req.flash('error', 'E-mail exists already, please pick a different one.');
         return res.redirect('/signup');
       }
       return bcrypt
@@ -29,10 +37,10 @@ exports.postSignup = (req, res, next) => {
             cart: { items: [] },
           });
           return user.save();
+        })
+        .then(result => {
+          res.redirect('/login');
         });
-    })
-    .then(result => {
-      res.redirect('/login');
     })
     .catch(err => {
       console.log(err);
@@ -41,23 +49,31 @@ exports.postSignup = (req, res, next) => {
 
 // 登入
 exports.getLogin = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    isAuthenticated: false,
+    errorMessage: message,
   });
 };
 
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  // const confirmPassword = req.body.confirmPassword;
   User
     .findOne({ email: email })
     .then(user => {
       if (!user) {
-        return res.redirect('/');
+        req.flash('error', 'Invalid email or password.');
+        return res.redirect('/login');
       }
-      bcrypt
+      return bcrypt
         .compare(password, user.password)
         .then(doMatch => {
           if (doMatch) {

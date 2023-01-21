@@ -45,6 +45,7 @@ exports.getIndex = (req, res, next) => {
         activeShop: true,
         productCSS: true,
         isAuthenticated: req.session.isLoggedIn,
+        csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => console.log(err));
@@ -105,7 +106,7 @@ exports.postOrder = (req, res, next) => {
       const products = user.cart.items.map(i => ({ quantity: i.quantity, product: { ...i.productId._doc } }));
       const order = new Order({
         user: {
-          name: req.user.name,
+          email: req.user.email,
           userId: req.user,
         },
         products: products
