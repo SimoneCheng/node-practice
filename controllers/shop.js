@@ -15,7 +15,11 @@ exports.getProducts = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.getProduct = (req, res, next) => {
@@ -30,7 +34,11 @@ exports.getProduct = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.getIndex = (req, res, next) => {
@@ -48,7 +56,11 @@ exports.getIndex = (req, res, next) => {
         csrfToken: req.csrfToken(),
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.getCart = (req, res, next) => {
@@ -64,7 +76,9 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     });
 };
 
@@ -88,7 +102,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     });
 };
 
@@ -120,7 +136,9 @@ exports.postOrder = (req, res, next) => {
       res.redirect("/orders");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     });
 };
 
@@ -136,6 +154,8 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     })
 };

@@ -24,11 +24,14 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
-        isAuthenticated: req.session.isLoggedIn,
+        errorMessage: 'Database operation failed, please try again',
+        validationErrors: [],
       });
     })
     .catch(err => {
-      console.log(err)
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     });
 };
 
@@ -50,7 +53,11 @@ exports.postAddProduct = (req, res, next) => {
       console.log('CREATED PRODUCT!');
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -77,7 +84,11 @@ exports.postEditProduct = (req, res, next) => {
           res.redirect("/admin/products");
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -88,7 +99,11 @@ exports.postDeleteProduct = (req, res, next) => {
       console.log('DESTROYED PRODUCT!');
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -102,6 +117,8 @@ exports.getProducts = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn,
       });
     }).catch(err => {
-      console.log(err)
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return (error);
     });
 };
