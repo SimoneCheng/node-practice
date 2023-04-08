@@ -3,6 +3,7 @@ require('dotenv').config();
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
+const multer = require("multer");
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const mongoose = require("mongoose");
@@ -30,6 +31,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer().single("image"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
   secret: 'my secret',
