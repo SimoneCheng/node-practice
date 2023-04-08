@@ -10,14 +10,6 @@ const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 
-const errorController = require("./controllers/error");
-
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const authRoutes = require("./routes/auth");
-
-const User = require('./models/user');
-
 const MONGODB_URI = `mongodb+srv://simone:${process.env.TOKEN}@cluster0.dbs3f3u.mongodb.net/shop?retryWrites=true&w=majority`;
 
 const app = express();
@@ -31,7 +23,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer().single("image"));
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
   secret: 'my secret',
@@ -41,12 +33,28 @@ app.use(session({
 }));
 app.use(csrfProtection);
 app.use(flash());
-
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
 });
+
+// ----------
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString + '-' + file.originalname);
+  }
+});
+
+app.use(multer({ storage: fileStorage }).single("image"));
+
+// ----------
+
+const User = require('./models/user');
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -65,6 +73,13 @@ app.use((req, res, next) => {
     })
 });
 
+// ----------
+
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
+const errorController = require("./controllers/error");
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -77,6 +92,8 @@ app.use((error, req, res, next) => {
     isAuthenticated: req.session.isLoggedIn,
   })
 });
+
+// ----------
 
 mongoose.set('strictQuery', false);
 mongoose
